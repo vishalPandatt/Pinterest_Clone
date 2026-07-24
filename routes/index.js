@@ -9,17 +9,19 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get("/createUser", function(req, res) {
-  UserModel.create({
-    username: "vishal",
-    password: "vishal123",
-    fullName: "Vishal Vashishth",
-    email: "vishal@example.com",
-    dp: {
-      type: String,
-      default: '',
-    },
-    posts: [],
-  })
-})
+router.get("/createUser", async function(req, res) {
+  try {
+    const createdUser = await UserModel.create({
+      username: "vishal",
+      password: "vishal123",
+      fullName: "Vishal Vashishth",
+      email: "vishal@example.com",
+      dp: '',
+      posts: [],
+    });
+    res.status(201).json(createdUser);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
 module.exports = router;
