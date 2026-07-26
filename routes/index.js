@@ -19,9 +19,17 @@ router.get("/createUser", async function(req, res) {
       dp: '',
       posts: [],
     });
-    res.status(201).json(createdUser);
+    res.send(createdUser);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
+
+router.get("/createPost", async function(req, res){
+  let createdPost = await PostModel.create({
+    postText: "Hello, this is a sample post."
+  });
+  res.send(createdPost); 
+});
+
 module.exports = router;

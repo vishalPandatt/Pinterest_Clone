@@ -1,23 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/pinterest");
-
-const postSchema = new mongoose.Schema({
-  postText: {
-    type: String,
-    required: true,
-    trim: true,
+const postSchema = new mongoose.Schema(
+  {
+    postText: String,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  likes: [
-    {
-      type: Array,
-      default: [],
-    },
-  ],
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.models.Post || mongoose.model("Post", postSchema);
