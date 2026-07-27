@@ -8,6 +8,12 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/allUsersPosts', async function(req, res, next) {
+  let user = await UserModel.findOne({_id: "6a6395575dfedf52091f84e7"});
+  await user.populate('posts');
+  res.send(user)
+});
+
 
 router.get("/createUser", async function(req, res) {
   try {
@@ -27,9 +33,13 @@ router.get("/createUser", async function(req, res) {
 
 router.get("/createPost", async function(req, res){
   let createdPost = await PostModel.create({
-    postText: "Hello, this is a sample post."
+    postText: "Hello, this is a sample post.",
+    user: "6a6395575dfedf52091f84e7",
   });
-  res.send(createdPost); 
+  let user = await UserModel.findOne({_id: "6a6395575dfedf52091f84e7"});
+  user.posts.push(createdPost._id);
+  await user.save();
+  res.send(createdPost);
 });
 
 module.exports = router;

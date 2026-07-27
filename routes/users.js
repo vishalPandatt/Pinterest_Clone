@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+mongoose.connect("mongodb://127.0.0.1:27017/pinterest");
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -10,6 +12,7 @@ const userSchema = new mongoose.Schema({
   password:{
     type: String,
     required: true,
+    unique: true,
   },
   fullName: {
     type: String,
@@ -27,8 +30,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-  posts: [],
+  posts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  }],
 }
 );
 
-module.exports = mongoose.models.User || mongoose.model('User', userSchema);
+
+module.exports = mongoose.model('User', userSchema);
