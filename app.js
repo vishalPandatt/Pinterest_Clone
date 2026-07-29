@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const expressSession = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -13,10 +14,16 @@ mongoose.connect("mongodb://127.0.0.1:27017/pinterest")
   .then(() => console.log("Connected to MongoDB successfully."))
   .catch((err) => console.error("MongoDB Connection Warning: Could not connect to MongoDB on mongodb://127.0.0.1:27017/pinterest.", err.message));
 
-var app = express();
+app.use(expressSession({
+  resave: false,
+  saveUninitialized: false,
+  secret: "mysecret",
+}));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(express.use)
 
 app.use(logger('dev'));
 app.use(express.json());
