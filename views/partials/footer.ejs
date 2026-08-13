@@ -1,0 +1,58 @@
+<script>
+  // Auto dismiss alerts after 4 seconds
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert-container');
+    alerts.forEach(alert => {
+      alert.style.opacity = '0';
+      alert.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => alert.remove(), 500);
+    });
+  }, 4000);
+
+  // Like pin async script
+  async function toggleLike(postId, btn) {
+    try {
+      const res = await fetch(`/like/post/${postId}`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        const icon = btn.querySelector('i');
+        const count = btn.querySelector('.like-count');
+        if (data.isLiked) {
+          btn.classList.add('active');
+          icon.className = 'ri-heart-fill';
+        } else {
+          btn.classList.remove('active');
+          icon.className = 'ri-heart-line';
+        }
+        if (count) count.textContent = data.likesCount;
+      }
+    } catch (e) {
+      window.location.href = `/like/post/${postId}`;
+    }
+  }
+
+  // Save pin async script
+  async function toggleSave(postId, btn) {
+    try {
+      const res = await fetch(`/save/post/${postId}`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.isSaved) {
+          btn.classList.add('btn-saved');
+          btn.textContent = 'Saved';
+        } else {
+          btn.classList.remove('btn-saved');
+          btn.textContent = 'Save';
+        }
+      }
+    } catch (e) {
+      window.location.href = `/save/post/${postId}`;
+    }
+  }
+</script>
+</body>
+</html>

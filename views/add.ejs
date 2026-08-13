@@ -1,0 +1,116 @@
+<%- include('partials/header', { activeTab: 'create' }) %>
+
+<main class="main-content">
+  <div class="create-pin-container">
+    <h1 style="font-size: 1.8rem; margin-bottom: 24px;">Create Pin</h1>
+
+    <form action="/createpost" method="POST" enctype="multipart/form-data">
+      <div class="create-pin-grid">
+        <!-- Left: Image Drag & Drop Dropzone -->
+        <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click();">
+          <i class="ri-upload-cloud-2-line upload-icon"></i>
+          <h4 style="font-size: 1.1rem; margin-bottom: 6px;">Choose a file or drag and drop it here</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">We recommend using high quality .jpg or .png images</p>
+          
+          <input 
+            type="file" 
+            name="image" 
+            id="fileInput" 
+            accept="image/*" 
+            required 
+            style="display: none;" 
+            onchange="previewFile(this)"
+          >
+          <img id="imgPreview" class="preview-image" style="display: none;" alt="Preview">
+        </div>
+
+        <!-- Right: Form Fields -->
+        <div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input 
+              type="text" 
+              name="title" 
+              class="form-input" 
+              placeholder="Add a title for your Pin" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea 
+              name="description" 
+              class="form-textarea" 
+              rows="4" 
+              placeholder="Add a detailed description..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+              <option value="Architecture">Architecture</option>
+              <option value="Interior">Interior</option>
+              <option value="Art & Design">Art & Design</option>
+              <option value="Photography">Photography</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Technology">Technology</option>
+              <option value="Travel">Travel</option>
+              <option value="Quotes">Quotes</option>
+              <option value="General" selected>General</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 12px;">Publish Pin</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  function previewFile(input) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('imgPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Drag & drop handlers
+  const dropzone = document.getElementById('dropzone');
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => dropzone.style.borderColor = 'var(--pinterest-red)', false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => dropzone.style.borderColor = 'var(--border-color)', false);
+  });
+
+  dropzone.addEventListener('drop', handleDrop, false);
+
+  function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    const fileInput = document.getElementById('fileInput');
+    fileInput.files = files;
+    previewFile(fileInput);
+  }
+</script>
+
+<%- include('partials/footer') %>

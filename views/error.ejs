@@ -1,3 +1,12 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<%- include('partials/header') %>
+
+<main class="main-content">
+  <div class="empty-state" style="margin-top: 60px;">
+    <i class="ri-error-warning-line" style="color: var(--pinterest-red);"></i>
+    <h1><%= message %></h1>
+    <h2 style="color: var(--text-muted); margin-top: 8px;"><%= error.status %></h2>
+    <a href="/feed" class="btn-primary" style="display:inline-block; width:auto; margin-top:24px; padding:12px 28px;">Back to Safety</a>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

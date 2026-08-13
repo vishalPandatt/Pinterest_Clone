@@ -1,0 +1,79 @@
+<%- include('partials/header', { activeTab: 'home' }) %>
+
+<div class="category-bar">
+  <% const categories = ['All', 'Architecture', 'Interior', 'Art & Design', 'Photography', 'Fashion', 'Technology', 'Travel', 'Quotes']; %>
+  <% categories.forEach(cat => { %>
+    <a href="/feed?category=<%= cat %>" class="category-chip <%= activeCategory === cat ? 'active' : '' %>">
+      <%= cat %>
+    </a>
+  <% }) %>
+</div>
+
+<main class="main-content">
+  <% if (posts.length === 0) { %>
+    <div class="empty-state">
+      <i class="ri-gallery-line"></i>
+      <h2>No Pins Found</h2>
+      <p>Be the first to create and share a Pin in this category!</p>
+      <a href="/add" class="btn-primary" style="display:inline-block; width:auto; margin-top:20px; padding:12px 28px;">Create a Pin</a>
+    </div>
+  <% } else { %>
+    <div class="pin-masonry">
+      <% posts.forEach(post => { %>
+        <% const isSaved = user && user.savedPosts && user.savedPosts.some(id => id.toString() === post._id.toString()); %>
+        <% const isLiked = user && post.likes && post.likes.some(id => id.toString() === user._id.toString()); %>
+        
+        <div class="pin-card">
+          <div class="pin-image-wrapper">
+            <a href="/pin/<%= post._id %>">
+              <img 
+                src="/images/uploads/<%= post.image %>" 
+                alt="<%= post.title %>" 
+                class="pin-img"
+                loading="lazy"
+                onerror="this.src='/images/uploads/sample_pin.png';"
+              >
+            </a>
+            <div class="pin-overlay">
+              <div class="pin-overlay-top">
+                <button 
+                  class="btn-save <%= isSaved ? 'btn-saved' : '' %>" 
+                  onclick="event.preventDefault(); toggleSave('<%= post._id %>', this)"
+                >
+                  <%= isSaved ? 'Saved' : 'Save' %>
+                </button>
+              </div>
+              <div class="pin-overlay-bottom">
+                <a href="/images/uploads/<%= post.image %>" download target="_blank" class="btn-overlay-action" title="Download Image">
+                  <i class="ri-download-line"></i>
+                </a>
+                <button 
+                  class="btn-overlay-action btn-like <%= isLiked ? 'active' : '' %>" 
+                  onclick="event.preventDefault(); toggleLike('<%= post._id %>', this)"
+                  title="Like Pin"
+                >
+                  <i class="<%= isLiked ? 'ri-heart-fill' : 'ri-heart-line' %>"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pin-info">
+            <h3 class="pin-title"><a href="/pin/<%= post._id %>"><%= post.title %></a></h3>
+            <% if (post.user) { %>
+              <div class="pin-author">
+                <img 
+                  src="/images/<%= post.user.dp && post.user.dp !== 'default-avatar.png' ? 'uploads/' + post.user.dp : 'default-avatar.png' %>" 
+                  alt="<%= post.user.username %>"
+                >
+                <span><%= post.user.fullname || post.user.username %></span>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

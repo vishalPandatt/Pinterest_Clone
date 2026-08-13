@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="avatar-wrapper">
+      <img 
+        src="/images/<%= user.dp && user.dp !== 'default-avatar.png' ? 'uploads/' + user.dp : 'default-avatar.png' %>" 
+        alt="<%= user.username %>" 
+        class="profile-avatar-lg"
+        id="profileAvatarImg"
+      >
+      <form id="avatarForm" action="/upload-avatar" method="POST" enctype="multipart/form-data" style="display:none;">
+        <input type="file" name="dp" id="avatarInput" accept="image/*" onchange="document.getElementById('avatarForm').submit();">
+      </form>
+      <label for="avatarInput" class="avatar-edit-btn" title="Change Profile Picture">
+        <i class="ri-pencil-line"></i>
+      </label>
+    </div>
+
+    <h1 class="profile-name"><%= user.fullname %></h1>
+    <p class="profile-username">@<%= user.username %></p>
+
+    <div class="profile-stats">
+      <div class="stat-item">
+        <span class="stat-num"><%= user.posts ? user.posts.length : 0 %></span> Created
+      </div>
+      <div class="stat-item">
+        <span class="stat-num"><%= user.savedPosts ? user.savedPosts.length : 0 %></span> Saved
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-tabs">
+    <button class="tab-btn active" onclick="switchProfileTab('created')">Created Pins (<%= user.posts ? user.posts.length : 0 %>)</button>
+    <button class="tab-btn" onclick="switchProfileTab('saved')">Saved Pins (<%= user.savedPosts ? user.savedPosts.length : 0 %>)</button>
+  </div>
+</div>
+
+<main class="main-content" style="padding-top:0;">
+  <!-- Created Pins Tab -->
+  <div id="createdTab" class="profile-tab-content">
+    <% if (!user.posts || user.posts.length === 0) { %>
+      <div class="empty-state">
+        <i class="ri-add-circle-line"></i>
+        <h3>No Created Pins Yet</h3>
+        <p>Inspiration starts here! Share your favorite ideas with the community.</p>
+        <a href="/add" class="btn-primary" style="display:inline-block; width:auto; margin-top:16px; padding:12px 24px;">Create your first Pin</a>
+      </div>
+    <% } else { %>
+      <div class="pin-masonry">
+        <% user.posts.forEach(post => { %>
+          <div class="pin-card">
+            <div class="pin-image-wrapper">
+              <a href="/pin/<%= post._id %>">
+                <img src="/images/uploads/<%= post.image %>" alt="<%= post.title %>" class="pin-img" onerror="this.src='/images/uploads/sample_pin.png';">
+              </a>
+              <div class="pin-overlay">
+                <div class="pin-overlay-top">
+                  <a href="/pin/<%= post._id %>" class="btn-save">View Pin</a>
+                </div>
+              </div>
+            </div>
+            <div class="pin-info">
+              <h3 class="pin-title"><a href="/pin/<%= post._id %>"><%= post.title %></a></h3>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Saved Pins Tab -->
+  <div id="savedTab" class="profile-tab-content" style="display: none;">
+    <% if (!user.savedPosts || user.savedPosts.length === 0) { %>
+      <div class="empty-state">
+        <i class="ri-bookmark-line"></i>
+        <h3>No Saved Pins Yet</h3>
+        <p>Save your favorite ideas from the home feed to find them later!</p>
+        <a href="/feed" class="btn-primary" style="display:inline-block; width:auto; margin-top:16px; padding:12px 24px;">Explore Home Feed</a>
+      </div>
+    <% } else { %>
+      <div class="pin-masonry">
+        <% user.savedPosts.forEach(post => { %>
+          <% if (post) { %>
+            <div class="pin-card">
+              <div class="pin-image-wrapper">
+                <a href="/pin/<%= post._id %>">
+                  <img src="/images/uploads/<%= post.image %>" alt="<%= post.title %>" class="pin-img" onerror="this.src='/images/uploads/sample_pin.png';">
+                </a>
+                <div class="pin-overlay">
+                  <div class="pin-overlay-top">
+                    <button class="btn-save btn-saved" onclick="event.preventDefault(); toggleSave('<%= post._id %>', this)">Saved</button>
+                  </div>
+                </div>
+              </div>
+              <div class="pin-info">
+                <h3 class="pin-title"><a href="/pin/<%= post._id %>"><%= post.title %></a></h3>
+              </div>
+            </div>
+          <% } %>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<script>
+  function switchProfileTab(tab) {
+    const createdTab = document.getElementById('createdTab');
+    const savedTab = document.getElementById('savedTab');
+    const btns = document.querySelectorAll('.tab-btn');
+
+    if (tab === 'created') {
+      createdTab.style.display = 'block';
+      savedTab.style.display = 'none';
+      btns[0].classList.add('active');
+      btns[1].classList.remove('active');
+    } else {
+      createdTab.style.display = 'none';
+      savedTab.style.display = 'block';
+      btns[1].classList.add('active');
+      btns[0].classList.remove('active');
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

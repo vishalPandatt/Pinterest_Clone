@@ -1,0 +1,98 @@
+<%- include('partials/header') %>
+
+<main class="main-content">
+  <div style="margin-bottom: 20px;">
+    <a href="javascript:history.back()" class="btn-icon" title="Go Back">
+      <i class="ri-arrow-left-line"></i>
+    </a>
+  </div>
+
+  <div class="pin-detail-container">
+    <div>
+      <img 
+        src="/images/uploads/<%= post.image %>" 
+        alt="<%= post.title %>" 
+        class="pin-detail-img"
+        onerror="this.src='/images/uploads/sample_pin.png';"
+      >
+    </div>
+
+    <div class="pin-detail-content">
+      <div>
+        <div class="pin-detail-header">
+          <span class="category-tag"><i class="ri-price-tag-3-line"></i> <%= post.category %></span>
+
+          <div style="display: flex; gap: 10px;">
+            <a href="/images/uploads/<%= post.image %>" download target="_blank" class="btn-icon" title="Download High Res Image">
+              <i class="ri-download-2-line"></i>
+            </a>
+
+            <% const isSaved = user && user.savedPosts && user.savedPosts.some(id => id.toString() === post._id.toString()); %>
+            <% const isLiked = user && post.likes && post.likes.some(id => id.toString() === user._id.toString()); %>
+
+            <button 
+              class="btn-icon <%= isLiked ? 'active' : '' %>" 
+              onclick="toggleLike('<%= post._id %>', this)"
+              title="Like Pin"
+            >
+              <i class="<%= isLiked ? 'ri-heart-fill' : 'ri-heart-line' %>"></i>
+            </button>
+
+            <button 
+              class="btn-save <%= isSaved ? 'btn-saved' : '' %>" 
+              onclick="toggleSave('<%= post._id %>', this)"
+            >
+              <%= isSaved ? 'Saved' : 'Save' %>
+            </button>
+          </div>
+        </div>
+
+        <h1 style="font-size: 2rem; margin-bottom: 12px;"><%= post.title %></h1>
+        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+          <%= post.description || 'No description provided for this pin.' %>
+        </p>
+      </div>
+
+      <div>
+        <% if (post.user) { %>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 20px; border-top: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img 
+                src="/images/<%= post.user.dp && post.user.dp !== 'default-avatar.png' ? 'uploads/' + post.user.dp : 'default-avatar.png' %>" 
+                alt="<%= post.user.username %>" 
+                style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;"
+              >
+              <div>
+                <h4 style="font-size: 1rem; font-weight: 600;"><%= post.user.fullname %></h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">@<%= post.user.username %></p>
+              </div>
+            </div>
+            <a href="/profile" class="nav-link" style="background: var(--input-bg); border-radius: var(--radius-full);">View Profile</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <% if (typeof relatedPosts !== 'undefined' && relatedPosts.length > 0) { %>
+    <div style="margin-top: 60px;">
+      <h2 style="font-size: 1.5rem; text-align: center; margin-bottom: 24px;">More like this</h2>
+      <div class="pin-masonry">
+        <% relatedPosts.forEach(relPost => { %>
+          <div class="pin-card">
+            <div class="pin-image-wrapper">
+              <a href="/pin/<%= relPost._id %>">
+                <img src="/images/uploads/<%= relPost.image %>" alt="<%= relPost.title %>" class="pin-img" onerror="this.src='/images/uploads/sample_pin.png';">
+              </a>
+            </div>
+            <div class="pin-info">
+              <h3 class="pin-title"><a href="/pin/<%= relPost._id %>"><%= relPost.title %></a></h3>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

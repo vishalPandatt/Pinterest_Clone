@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Pinterest' %></title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="/feed" class="brand-logo">
+      <i class="ri-pinterest-fill"></i>
+    </a>
+    <a href="/feed" class="nav-link <%= typeof activeTab !== 'undefined' && activeTab === 'home' ? 'active' : '' %>">Home</a>
+    <a href="/add" class="nav-link <%= typeof activeTab !== 'undefined' && activeTab === 'create' ? 'active' : '' %>">Create</a>
+  </div>
+
+  <div class="search-container">
+    <form action="/search" method="GET" class="search-form">
+      <i class="ri-search-line search-icon"></i>
+      <input 
+        type="text" 
+        name="q" 
+        class="search-input" 
+        placeholder="Search for ideas, designs, photography..."
+        value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+      >
+    </form>
+  </div>
+
+  <div class="nav-right">
+    <a href="/profile" class="profile-badge">
+      <img 
+        src="/images/<%= currentUser.dp && currentUser.dp !== 'default-avatar.png' ? 'uploads/' + currentUser.dp : 'default-avatar.png' %>" 
+        alt="<%= currentUser.username %>" 
+        class="avatar-img-sm"
+      >
+      <span style="font-weight:600; font-size:0.9rem;"><%= currentUser.username %></span>
+    </a>
+    <a href="/logout" class="btn-icon" title="Logout">
+      <i class="ri-logout-box-r-line"></i>
+    </a>
+  </div>
+</nav>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error.length > 0) { %>
+  <div class="alert-container">
+    <div class="alert alert-error">
+      <i class="ri-error-warning-fill"></i>
+      <span><%= error %></span>
+    </div>
+  </div>
+<% } %>
+
+<% if (typeof success !== 'undefined' && success.length > 0) { %>
+  <div class="alert-container">
+    <div class="alert alert-success">
+      <i class="ri-checkbox-circle-fill"></i>
+      <span><%= success %></span>
+    </div>
+  </div>
+<% } %>
