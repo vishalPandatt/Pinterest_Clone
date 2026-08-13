@@ -1,19 +1,12 @@
 const mongoose = require('mongoose');
 const plm = require('passport-local-mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/pinterest");
-
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-  },
-  password:{
-    type: String,
-    required: true,
-    unique: true,
   },
   fullname: {
     type: String,
@@ -29,16 +22,19 @@ const userSchema = new mongoose.Schema({
   },
   dp: {
     type: String,
-    default: '',
+    default: 'default-avatar.png',
   },
   posts: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Post',
   }],
-}
-);
+  savedPosts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  }],
+}, { timestamps: true });
 
 userSchema.plugin(plm);
 
-
 module.exports = mongoose.model('User', userSchema);
+

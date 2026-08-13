@@ -1,30 +1,38 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/pinterest");
-
 const postSchema = new mongoose.Schema(
   {
-    postText: {
+    title: {
       type: String,
       required: true,
       trim: true,
     },
-    user:{
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",  
+      ref: "User",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
+    category: {
+      type: String,
+      default: "General",
     },
-    likes: [  
+    likes: [
       {
-        type: Array,
-        default: [],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Post", postSchema);
+
