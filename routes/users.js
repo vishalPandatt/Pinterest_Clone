@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const plm = require('passport-local-mongoose');
+const plmImport = require('passport-local-mongoose');
+const plm = typeof plmImport === 'function' ? plmImport : (plmImport.default || plmImport);
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -35,6 +36,7 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 userSchema.plugin(plm);
+
 
 module.exports = mongoose.model('User', userSchema);
 
