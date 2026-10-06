@@ -347,14 +347,6 @@ npm start
 | http-errors | ~1.6.3 | HTTP error handling |
 | debug | ~2.6.9 | Debugging utility |
 
-### Dev Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| nodemon | ^3.1.4 | Auto-restart on file changes |
-
----
-
 ## Configuration
 
 ### MongoDB Connection
@@ -440,7 +432,7 @@ This project is a portfolio/educational project. Feel free to use it as a refere
 
 ## Author
 
-**Vishal Pandatt**
+**Vishal Vashishth**
 
 For questions or contributions, please reach out or submit pull requests.
 
